@@ -34,6 +34,7 @@ class Asm_Solr_Block_Filter_Product extends Asm_Solr_Block_Filter
 
     public function getResultCount()
     {
+        $bob=$this->getResult()->getCount();
         return $this->getResult()->getCount();
     }
 
@@ -53,6 +54,16 @@ class Asm_Solr_Block_Filter_Product extends Asm_Solr_Block_Filter
             $offset = 0;
 
             $query = $result->getQuery();
+
+            // add attributes marked as searchable to the fields to query
+            $searchableAttributes  = Mage::helper('solr/attribute')->getSearchableAttributes();
+            $fieldProcessorFactory = Mage::getResourceModel('solr/indexer_fieldprocessor_factory');
+            foreach ($searchableAttributes as $attribute)
+            {
+                $fieldProcessor = $fieldProcessorFactory->getFieldProcessor($attribute->getAttributeCode());
+                $query->setQueryField($fieldProcessor->getFieldName());
+            }
+
             $query->setFaceting(true);
             $query->setKeywords($keywords);
             $query->addFilter('type', $solrType);

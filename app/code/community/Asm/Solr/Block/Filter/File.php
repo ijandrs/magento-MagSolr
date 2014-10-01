@@ -34,6 +34,7 @@ class Asm_Solr_Block_Filter_File extends Asm_Solr_Block_Filter
 
     public function getResultCount()
     {
+        $bob2=$this->getResult()->getCount();
         return $this->getResult()->getCount();
     }
 
